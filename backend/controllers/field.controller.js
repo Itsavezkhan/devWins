@@ -2,22 +2,76 @@ import Field from "../models/fields.model.js";
 import Value from "../models/values.model.js";
 
 // Add new field to a domain
+// export const addField = async (req, res) => {
+//   try {
+//     const field = await Field.create({
+//       name: req.body.name,
+//       domainId: req.params.domainId,
+//     });
+//     res.json(field);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
+
+// // Get all fields of a domain
+// export const getFields = async (req, res) => {
+//   try {
+//     const fields = await Field.find({ domainId: req.params.domainId });
+//     res.json(fields);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
+
 export const addField = async (req, res) => {
   try {
+    const { name } = req.body;
+    const { domainId } = req.params;
+
+    // Check that user is authenticated
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Check if the domain belongs to the user
+    const domain = await Domain.findOne({ _id: domainId, user: req.user._id });
+    if (!domain) {
+      return res
+        .status(403)
+        .json({ error: "Domain not found or unauthorized" });
+    }
+
+    // Create the field under that domain
     const field = await Field.create({
-      name: req.body.name,
-      domainId: req.params.domainId,
+      name,
+      domainId,
     });
-    res.json(field);
+
+    res.status(201).json(field);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
-// Get all fields of a domain
 export const getFields = async (req, res) => {
   try {
-    const fields = await Field.find({ domainId: req.params.domainId });
+    const { domainId } = req.params;
+
+    // Check that user is authenticated
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Check if the domain belongs to the user
+    const domain = await Domain.findOne({ _id: domainId, user: req.user._id });
+    if (!domain) {
+      return res
+        .status(403)
+        .json({ error: "Domain not found or unauthorized" });
+    }
+
+    // Get fields only for that domain
+    const fields = await Field.find({ domainId });
     res.json(fields);
   } catch (err) {
     res.status(500).json({ error: err.message });

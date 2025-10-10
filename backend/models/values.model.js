@@ -6,7 +6,11 @@ const ValueSchema = new mongoose.Schema({
     ref: "Field",
     required: true,
   },
-  date: { type: String, required: true },
+  date: {
+    type: String,
+    required: true,
+    default: () => new Date().toISOString().split("T")[0],
+  },
   value: { type: Number, required: true },
 });
 
