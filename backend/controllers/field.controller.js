@@ -84,3 +84,35 @@ export const getFields = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const addDailyFieldValues = async (req, res) => {
+  try {
+    const { domainId } = req.params;
+    const { values, date } = req.body; // [{ fieldId, value }]
+
+    if (!Array.isArray(values) || values.length === 0) {
+      return res.status(400).json({ message: "No values provided" });
+    }
+
+    // Server sets today's date
+    // const today = new Date().toISOString().split("T")[0]; // e.g., "2025-10-11"
+
+    const createdValues = await Promise.all(
+      values.map(({ fieldId, value }) =>
+        Value.create({
+          fieldId,
+          value,
+          date,
+        })
+      )
+    );
+
+    res.status(201).json({
+      message: "Values added successfully",
+      data: createdValues,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to add values" });
+  }
+};
