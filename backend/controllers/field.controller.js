@@ -1,5 +1,6 @@
 import Field from "../models/fields.model.js";
 import Value from "../models/values.model.js";
+import Domain from "../models/domains.model.js";
 
 // Add new field to a domain
 // export const addField = async (req, res) => {
@@ -31,11 +32,14 @@ export const addField = async (req, res) => {
 
     // Check that user is authenticated
     if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: "UnauthorizedDDDD" });
     }
 
     // Check if the domain belongs to the user
-    const domain = await Domain.findOne({ _id: domainId, user: req.user._id });
+    const domain = await Domain.findOne({
+      _id: domainId,
+      userId: req.user._id,
+    });
     if (!domain) {
       return res
         .status(403)
@@ -63,7 +67,10 @@ export const getFields = async (req, res) => {
     }
 
     // Check if the domain belongs to the user
-    const domain = await Domain.findOne({ _id: domainId, user: req.user._id });
+    const domain = await Domain.findOne({
+      _id: domainId,
+      userId: req.user._id,
+    });
     if (!domain) {
       return res
         .status(403)

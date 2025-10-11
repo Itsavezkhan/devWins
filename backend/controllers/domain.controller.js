@@ -13,9 +13,10 @@ export const addDomain = async (req, res) => {
     }
 
     // Create the domain with the authenticated user's ID
+    console.log("adddomain", req.user._id);
     const domain = await Domain.create({
       name,
-      user: req.user._id,
+      userId: req.user._id,
     });
 
     res.status(201).json(domain);
@@ -58,14 +59,17 @@ export const addDomain = async (req, res) => {
 // };
 
 export const getDomains = async (req, res) => {
+  console.log("req of domain", req.user);
+  console.log("req of domain8");
   try {
     // Ensure user is authenticated
+    console.log("req of domain", req.user);
     if (!req.user || !req.user._id) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Unauthorizedd" });
     }
 
     // Fetch only domains that belong to this user
-    const domains = await Domain.find({ user: req.user._id });
+    const domains = await Domain.find({ userId: req.user._id });
     res.json(domains);
   } catch (err) {
     res.status(500).json({ error: err.message });

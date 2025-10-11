@@ -14,13 +14,13 @@ const app = express();
 connectDB();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
   })
 );
-app.use(cookieParser());
 
 app.get("/posts", (req, res) => {
   res.json({ message: "okay bhao" });
