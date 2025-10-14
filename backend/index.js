@@ -5,6 +5,7 @@ import githubRotes from "./routes/githubRoutes.js";
 import domainRoutes from "./routes/domainRoutes.js";
 import fieldRoutes from "./routes/fieldRoutes.js";
 import valueRoutes from "./routes/valueRoutes.js";
+import insightsRoutes from "./routes/insightsRoutes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -30,6 +31,7 @@ app.use("/auth", userRoutes);
 app.use("/user", githubRotes);
 app.use("/api/domains", domainRoutes);
 app.use("/api/fields", fieldRoutes);
+app.use("/api", insightsRoutes);
 app.use("/api/values", valueRoutes);
 
 app.listen(PORT, () => {

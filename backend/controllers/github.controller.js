@@ -184,3 +184,47 @@ export const getRepoAnalytics = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch analytics data" });
   }
 };
+
+// export const getGithubCommits = async (req, res) => {
+//   try {
+//     const { username, repo } = req.params;
+
+//     // GitHub API for commits
+//     const response = await axios.get(
+//       `https://api.github.com/repos/${username}/${repo}/commits`
+//     );
+
+//     // Count total commits (this returns last 30 by default)
+//     const commitCount = response.data.length;
+
+//     res.json({ commitCount });
+//   } catch (error) {
+//     console.error("Error fetching commits:", error.message);
+//     res
+//       .status(500)
+//       .json({ message: "Failed to fetch commits", error: error.message });
+//   }
+// };
+export const getGithubCommits = async (req, res) => {
+  try {
+    const { username, repo } = req.params;
+
+    const response = await axios.get(
+      `https://api.github.com/repos/${username}/${repo}/commits`
+    );
+
+    const commitCount = response.data.length;
+    res.json({ commitCount });
+  } catch (error) {
+    // ✅ Handle empty repo (409) gracefully
+    if (error.response?.status === 409) {
+      return res.json({ commitCount: 0, message: "Repository is empty" });
+    }
+
+    // Other errors
+    console.error("Error fetching commits:", error.message);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch commits", error: error.message });
+  }
+};
