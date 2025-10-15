@@ -84,6 +84,7 @@ export const githubCallback = async (req, res) => {
         email,
         avatar: profile.avatar_url,
         accessToken,
+        provider: "github",
       });
     } else {
       user.accessToken = accessToken;
@@ -106,7 +107,7 @@ export const githubCallback = async (req, res) => {
       sameSite: "lax",
       path: "/",
     });
-
+    console.log("User after github login:", user);
     res.redirect(`${FRONTEND_URL}/dashboard`);
   } catch (error) {
     console.error("GitHub OAuth Error:", error);
@@ -123,4 +124,113 @@ export const UserLogout = (req, res) => {
   });
 
   res.json({ message: "Logout Successful" });
+};
+
+export const googleLogin = (req, res) => {
+  const githubCallbackUrl = "http://localhost:5001/auth/login/google/callback";
+  const redirectUri =
+    "https://accounts.google.com/o/oauth2/v2/auth?" +
+    new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      redirect_uri: githubCallbackUrl,
+      response_type: "code",
+      scope: "email profile",
+      access_type: "offline",
+      prompt: "consent",
+    }).toString();
+
+  res.redirect(redirectUri);
+};
+
+export const googleCallback = async (req, res) => {
+  const githubCallbackUrl = "http://localhost:5001/auth/login/google/callback";
+  const code = req.query.code;
+  if (!code) return res.status(400).json({ message: "Code not provided" });
+
+  try {
+    // Step 1️⃣ Exchange code for tokens
+    const tokenResponse = await axios.post(
+      "https://oauth2.googleapis.com/token",
+      new URLSearchParams({
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: githubCallbackUrl,
+        grant_type: "authorization_code",
+      }),
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    );
+
+    const { access_token } = tokenResponse.data;
+    const accessToken = tokenResponse.data.access_token;
+
+    // Step 2️⃣ Get user info
+    const userResponse = await axios.get(
+      "https://www.googleapis.com/oauth2/v2/userinfo",
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+      }
+    );
+
+    const { id, name, email, picture } = userResponse.data;
+
+    // Step 3️⃣ Check if user exists
+    let user = await User.findOne({ googleId: id });
+    if (!user) {
+      // Step 4️⃣ Create new Google user
+      user = await User.create({
+        googleId: id,
+        name,
+        email,
+        avatar: picture,
+        provider: "google",
+        accessToken,
+      });
+    }
+
+    // Step 5️⃣ Generate JWT
+    const token = jwt.sign(
+      { id: user._id, provider: user.provider },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // res.json({ success: true, tokenjwt, user });
+    console.log("Generated token at login with google:", token);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      domain: "localhost",
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+    console.log("User after Google login:", user);
+    res.redirect(`${FRONTEND_URL}/dashboard`);
+  } catch (error) {
+    console.error("Google Auth Error:", error);
+    res.status(500).json({ message: "Google authentication failed" });
+  }
+};
+
+export const getCurrentUser = async (req, res) => {
+  try {
+    const token = req.cookies.token; // read from cookie
+
+    if (!token) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
