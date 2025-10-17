@@ -22,7 +22,8 @@ const UserSchema = new mongoose.Schema(
     name: { type: String },
     email: { type: String },
     avatar: { type: String },
-    accessToken: { type: String },
+    githubAccessToken: { type: String },
+    githubConnected: { type: Boolean },
 
     provider: { type: String, enum: ["github", "google"] },
   },

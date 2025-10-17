@@ -81,7 +81,7 @@ import axios from "axios";
 export const getGithubData = async (req, res) => {
   try {
     const user = req.user;
-    const accessToken = user.accessToken;
+    const accessToken = user.githubAccessToken;
 
     if (!accessToken) {
       return res.status(400).json({ message: "No GitHub access token found" });
@@ -125,7 +125,7 @@ export const getGithubData = async (req, res) => {
 export const getRepoAnalytics = async (req, res) => {
   try {
     const user = req.user;
-    const accessToken = user.accessToken;
+    const accessToken = user.githubAccessToken;
     const { repo } = req.params; // e.g. "my-repo"
     const { apis } = req.body; // e.g. ["commit_activity", "code_frequency"]
 

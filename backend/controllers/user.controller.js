@@ -83,11 +83,12 @@ export const githubCallback = async (req, res) => {
         name: profile.name,
         email,
         avatar: profile.avatar_url,
-        accessToken,
+        githubAccessToken: accessToken,
+        githubConnected: true,
         provider: "github",
       });
     } else {
-      user.accessToken = accessToken;
+      user.githubAccessToken = accessToken;
       user.avatar = profile.avatar_url;
       await user.save();
     }
@@ -184,13 +185,15 @@ export const googleCallback = async (req, res) => {
         email,
         avatar: picture,
         provider: "google",
-        accessToken,
+        // accessToken,
+        githubAccessToken: null,
+        githubConnected: false,
       });
     }
 
     // Step 5️⃣ Generate JWT
     const token = jwt.sign(
-      { id: user._id, provider: user.provider },
+      { id: user._id, googleId: user.googleId },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
