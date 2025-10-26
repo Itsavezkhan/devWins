@@ -1,5 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+
+interface RepoStats {
+  codeFreq: [number, number, number][]; // [week, additions, deletions]
+  commits: any[];
+  prs: any[];
+  issues: any[];
+}
 // Async thunk for fetching AI insights
 export const fetchInsight = createAsyncThunk(
   "insights/fetchInsight",
@@ -18,6 +25,32 @@ export const fetchInsight = createAsyncThunk(
       return data.insight;
     } catch (error) {
       return rejectWithValue(error.message);
+    }
+  }
+);
+export const fetchRepoInsight = createAsyncThunk(
+  "insights/fetchRepoInsight",
+  async (repoStats: RepoStats, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://localhost:5001/api/insights/repoinsights", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // include cookies/auth credentials
+        body: JSON.stringify(repoStats),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return rejectWithValue(errorData.message || "Failed to fetch AI insight");
+      }
+
+      const data = await response.json();
+      return data.insight; // assuming API responds with { insight: "..." }
+    } catch (error: any) {
+      console.error("Error fetching repo AI insight:", error.message);
+      return rejectWithValue(error.message || "Failed to fetch AI insight");
     }
   }
 );

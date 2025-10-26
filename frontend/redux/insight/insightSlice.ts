@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchInsight } from "./insightThunks";
+import { fetchInsight, fetchRepoInsight } from "./insightThunks";
 
 const insightsSlice = createSlice({
   name: "insights",
   initialState: {
     insight: "",
+    repoInsight: "",
     loading: false,
     error: null,
   },
@@ -20,6 +21,18 @@ const insightsSlice = createSlice({
         state.insight = action.payload;
       })
       .addCase(fetchInsight.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+        .addCase(fetchRepoInsight.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchRepoInsight.fulfilled, (state, action) => {
+        state.loading = false;
+        state.repoInsight = action.payload;
+      })
+      .addCase(fetchRepoInsight.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -57,7 +57,7 @@ const DomainCard: React.FC<DomainCardProps> = ({ d }) => {
       </div>
 
       {/* Progress Bar */}
-      <div>
+      {/* <div>
         <p className="text-sm text-gray-700 mb-1">Progress</p>
         <div className="w-full bg-gray-300 h-2 rounded-full overflow-hidden">
           <div
@@ -68,10 +68,10 @@ const DomainCard: React.FC<DomainCardProps> = ({ d }) => {
         <p className="text-sm text-right mt-1 text-gray-700 font-medium">
           {progress}%
         </p>
-      </div>
+      </div> */}
 
       {/* Bottom Row */}
-      <div className="flex justify-between items-center mt-2">
+      {/* <div className="flex justify-between items-center mt-2">
         <div className="flex -space-x-2">
           <img
             src="/avatars/1.png"
@@ -92,7 +92,7 @@ const DomainCard: React.FC<DomainCardProps> = ({ d }) => {
         <span className="text-sm font-medium text-indigo-600">
           {Math.floor(Math.random() * 5) + 1} Days Left
         </span>
-      </div>
+      </div> */}
     </motion.div>
   );
 };

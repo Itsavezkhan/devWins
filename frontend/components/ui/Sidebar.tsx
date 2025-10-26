@@ -22,25 +22,27 @@ export default function Sidebar() {
       name: "Dashboard",
       path: "/dashboard",
     },
-    {
-      name: "Reflections",
-      path: "/dashboard/reflections",
-    },
-    {
-      name: "Analytics",
-      path: "/dashboard/analytics",
-    },
-    {
-      name: "Performance",
-      path: "/dashboard/performance",
-    },
+    // {
+    //   name: "Reflections",
+    //   path: "/dashboard/reflections",
+    // },
+    // {
+    //   name: "Analytics",
+    //   path: "/dashboard/analytics",
+    // },
+    // {
+    //   name: "Performance",
+    //   path: "/dashboard/performance",
+    // },
   ];
 
   return (
     <aside className="hidden md:flex flex-col w-60 bg-white h-screen border-r  shrink-0 border-gray-200 dark:border-gray-800  dark:bg-gray-900 p-4">
       {/* Logo */}
       <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+        <Link href="/dashboard">
         DevWins
+        </Link>
       </h1>
 
       {/* Navigation Links */}

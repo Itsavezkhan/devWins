@@ -45,13 +45,16 @@ export default function Header() {
       </div>
 
       <div className="flex items-center space-x-4">
-        <p className="px-2 py-1 bg-black text-white rounded-lg">
+        <div className="px-2 py-1 bg-black text-white rounded-lg">
           {user?.provider === "google" ? (
-            <p>Connect with github</p>
+            <p    onClick={() => {
+    window.location.href = "http://localhost:5001/auth/login/github";
+  }}
+ >Connect with github</p>
           ) : (
             user?.provider === "github" && <p>Connected</p>
           )}
-        </p>
+        </div>
         {user ? (
           <>
             <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">

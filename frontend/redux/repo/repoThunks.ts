@@ -116,3 +116,45 @@ export const fetchReposWithCommits = createAsyncThunk(
 //     }
 //   }
 // );
+
+async function fetchStatsWithRetry(url: string, headers: any, maxRetries = 10, delay = 2000) {
+  let attempts = 0;
+  while (attempts < maxRetries) {
+    const res = await axios.get(url, { headers });
+    if (res.status === 200) return res.data; // data ready
+    if (res.status === 202) {
+      attempts++;
+      await new Promise(r => setTimeout(r, delay)); // wait before retry
+      continue;
+    }
+    throw new Error(`GitHub API returned ${res.status}`);
+  }
+  throw new Error("Stats not ready after multiple attempts");
+}
+
+export const fetchRepoDetails = createAsyncThunk(
+  "repos/fetchRepoDetails",
+  async ({ owner, repo, token }, { rejectWithValue }) => {
+    const headers = { Authorization: `token ${token}` };
+    const baseUrl = "https://api.github.com";
+
+    try {
+      // Poll commit_activity and code_frequency separately
+      const [commits, prs, issues, codeFreq] = await Promise.all([
+        fetchStatsWithRetry(`${baseUrl}/repos/${owner}/${repo}/stats/commit_activity`, headers),
+        axios
+          .get(`${baseUrl}/repos/${owner}/${repo}/pulls?state=all&per_page=30&sort=created&direction=desc`, { headers })
+          .then(res => res.data),
+        axios
+          .get(`${baseUrl}/repos/${owner}/${repo}/issues?state=all&per_page=30&sort=created&direction=desc`, { headers })
+          .then(res => res.data),
+        fetchStatsWithRetry(`${baseUrl}/repos/${owner}/${repo}/stats/code_frequency`, headers),
+      ]);
+
+      return { owner, repo, commits, prs, issues, codeFreq };
+    } catch (error: any) {
+      console.error("Error fetching repo details:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

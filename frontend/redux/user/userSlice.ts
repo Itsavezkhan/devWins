@@ -8,6 +8,7 @@ export interface User {
   avatar: string;
   provider: "google" | "github";
   googleId?: string;
+  githubConnected: boolean;
   githubId?: string;
   accessToken?: string;
   createdAt: string;

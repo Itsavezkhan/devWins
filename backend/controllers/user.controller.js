@@ -75,6 +75,7 @@ export const githubCallback = async (req, res) => {
       );
       email = emails.find((e) => e.primary).email;
     }
+    console.log("profile", profile)
     let user = await User.findOne({ githubId: profile.id });
     if (!user) {
       user = await User.create({
@@ -92,11 +93,248 @@ export const githubCallback = async (req, res) => {
       user.avatar = profile.avatar_url;
       await user.save();
     }
-    const tokenjwt = jwt.sign(
-      { id: user._id, githubId: user.githubId },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // const tokenjwt = jwt.sign(
+    //   { id: user._id, githubId: user.githubId },
+    //   JWT_SECRET,
+    //   { expiresIn: "7d" }
+    // );
+
+    // second attempt
+    // let currentUserId = null;
+    // const tokenn = req.cookies.token;
+    // console.log("git connected token", tokenn)
+    // if (tokenn) {
+    //   const decoded = jwt.verify(tokenn, JWT_SECRET);
+    //   console.log("git connected decoded", decoded)
+    //   currentUserId = decoded.id;
+    //    console.log("git connected currentUserId", currentUserId)
+    // }
+
+    // let user;
+
+    // if (currentUserId) {
+    //   // ✅ Connect GitHub to existing user
+    //   user = await User.findById(currentUserId);
+    //   console.log("user aa raha hai ", user)
+    //   if (user) {
+    //     user.githubId = profile.id;
+    //     user.githubAccessToken = accessToken;
+    //     user.githubConnected = true;
+    //     user.avatar = profile.avatar_url;
+    //     await user.save();
+    //   }
+    // } else {
+    //   // ✅ Normal login via GitHub
+    //   user = await User.findOne({ githubId: profile.id });
+    //   if (!user) {
+    //     user = await User.create({
+    //       githubId: profile.id,
+    //       username: profile.login,
+    //       name: profile.name,
+    //       googleId: null,
+    //       email,
+    //       avatar: profile.avatar_url,
+    //       githubAccessToken: accessToken,
+    //       githubConnected: true,
+    //       provider: "github",
+    //     });
+    //   } else {
+    //     user.githubAccessToken = accessToken;
+    //     user.avatar = profile.avatar_url;
+    //     await user.save();
+    //   }
+    // }
+    // thried attemptt
+    //  let currentUserId = null;
+    // const tokenn = req.cookies.token;
+
+    // if (tokenn) {
+    //   const decoded = jwt.verify(tokenn, process.env.JWT_SECRET);
+    //   currentUserId = decoded.id;
+    // }
+
+    // let user;
+
+    // // 🟢 CASE 1: Logged-in user connecting GitHub
+    // if (currentUserId) {
+    //   const currentUser = await User.findById(currentUserId);
+    //   const existingGithubUser = await User.findOne({ githubId: profile.id });
+
+    //   // ⚠️ If someone else already has this GitHub ID
+    //   if (
+    //     existingGithubUser &&
+    //     existingGithubUser._id.toString() !== currentUserId
+    //   ) {
+    //     // If emails match → merge
+    //     if (existingGithubUser.githubId === profile.id) {
+    //       await existingGithubUser.deleteOne(); // remove duplicate
+    //       currentUser.githubId = profile.id;
+    //       currentUser.githubAccessToken = accessToken;
+    //       currentUser.githubConnected = true;
+    //       currentUser.avatar = profile.avatar_url;
+    //       await currentUser.save();
+    //     } else {
+    //       return res
+    //         .status(409)
+    //         .json({ message: "This GitHub account is already linked to another user." });
+    //     }
+    //   } else if (currentUser){
+    //     // ✅ Safe to connect normally
+    //     currentUser.githubId = profile.id;
+    //     currentUser.githubAccessToken = accessToken;
+    //     currentUser.githubConnected = true;
+    //     currentUser.avatar = profile.avatar_url;
+    //     await currentUser.save();
+    //   }
+
+    //   user = currentUser;
+    // }
+
+    // // // 🟡 CASE 2: User logging in via GitHub (not already logged in)
+    // else {
+    //     user = await User.findOne({ githubId: profile.id });
+    // if (!user) {
+    //   user = await User.create({
+    //     githubId: profile.id,
+    //     username: profile.login,
+    //     name: profile.name,
+    //     email,
+    //     avatar: profile.avatar_url,
+    //     githubAccessToken: accessToken,
+    //     githubConnected: true,
+    //     provider: "github",
+    //   });
+    // } else {
+    //   user.githubAccessToken = accessToken;
+    //   user.avatar = profile.avatar_url;
+    //   await user.save();
+    // }
+
+    // thrid ends here
+      // user = await User.findOne({ githubId: profile.id });
+
+      // if (!user) {
+      //   // 🔍 Check by email — maybe this person has Google login already
+      //   // const existingByEmail = email ? await User.findOne({ email }) : null;
+
+      //   if (existingByEmail) {
+      //     // link GitHub to the same Google user
+      //     existingByEmail.githubId = profile.id;
+      //     existingByEmail.githubAccessToken = accessToken;
+      //     existingByEmail.githubConnected = true;
+      //     existingByEmail.avatar = profile.avatar_url;
+      //     await existingByEmail.save();
+      //     user = existingByEmail;
+      //   } else {
+      //     // create brand-new GitHub user
+      //     user = await User.create({
+      //       githubId: profile.id,
+      //       username: profile.login,
+      //       name: profile.name,
+      //       email: email , // fallback if GitHub hides email
+      //       avatar: profile.avatar_url,
+      //       githubAccessToken: accessToken,
+      //       githubConnected: true,
+      //       provider: "github",
+              
+   
+      //     });
+      //   }
+      // } else {
+      //   // update token if existing GitHub user logs in again
+      //   user.githubAccessToken = accessToken;
+      //   user.avatar = profile.avatar_url;
+      //   await user.save();
+      // }
+    // }
+//     let currentUserId = null;
+// const tokenn = req.cookies.token;
+
+// if (tokenn) {
+//   const decoded = jwt.verify(tokenn, process.env.JWT_SECRET);
+//   currentUserId = decoded.id;
+// }
+
+// let user;
+
+// // 🟢 CASE 1: Logged-in user connecting GitHub
+// console.log("currentuserid", currentUserId)
+// if (currentUserId) {
+//       const currentUser = await User.findById(currentUserId);
+//       const existingGithubUser = await User.findOne({ githubId: profile.id });
+
+//       // ⚠️ If someone else already has this GitHub ID
+//       if (
+//         existingGithubUser &&
+//         existingGithubUser._id.toString() !== currentUserId
+//       ) {
+//         // If emails match → merge
+//         if (existingGithubUser.githubId === profile.id) {
+//           await existingGithubUser.deleteOne(); // remove duplicate
+//           currentUser.githubId = profile.id;
+//           currentUser.githubAccessToken = accessToken;
+//           currentUser.githubConnected = true;
+//           currentUser.avatar = profile.avatar_url;
+//           await currentUser.save();
+//         } else {
+//           return res
+//             .status(409)
+//             .json({ message: "This GitHub account is already linked to another user." });
+//         }
+//       } else if (currentUser){
+//         // ✅ Safe to connect normally
+//         currentUser.githubId = profile.id;
+//         currentUser.githubAccessToken = accessToken;
+//         currentUser.githubConnected = true;
+//         currentUser.avatar = profile.avatar_url;
+//         await currentUser.save();
+//       }
+
+//       user = currentUser;
+//     }
+  
+// else if (currentUserId === null ) {
+//   user = await User.findOne({ githubId: profile.id });
+// console.log("inside else")
+//   if (!user) {
+//     user = await User.create({
+//       githubId: profile.id,
+//       username: profile.login,
+//       name: profile.name,
+//       email,
+//       avatar: profile.avatar_url,
+//       githubAccessToken: accessToken,
+//       githubConnected: true,
+//       provider: "github",
+//     });
+//   } else {
+//     user.githubAccessToken = accessToken;
+//     user.avatar = profile.avatar_url;
+//     await user.save();
+//   }
+// }
+// console.log(user)
+
+// // ⚡ Ensure user exists before creating JWT
+// if (!user) {
+//   return res.status(500).json({ message: "GitHub login failed, user not created" });
+// }
+
+const tokenjwt = jwt.sign(
+  { id: user._id, githubId: user.githubId },
+  JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
+
+    // ✅ Issue JWT for login or keep existing one
+    // const tokenjwt = jwt.sign(
+    //   { id: user._id, githubId: user.githubId },
+    //   JWT_SECRET,
+    //   { expiresIn: "7d" }
+    // );
+   
+
 
     // res.json({ success: true, tokenjwt, user });
     console.log("Generated token at login:", tokenjwt);
@@ -176,20 +414,45 @@ export const googleCallback = async (req, res) => {
     const { id, name, email, picture } = userResponse.data;
 
     // Step 3️⃣ Check if user exists
+    // let user = await User.findOne({ googleId: id });
+    // if (!user) {
+    //   // Step 4️⃣ Create new Google user
+    //   user = await User.create({
+    //     googleId: id,
+    //     githubId: null,
+    //     name,
+    //     email,
+    //     avatar: picture,
+    //     provider: "google",
+    //     // accessToken,
+    //     githubAccessToken: null,
+    //     githubConnected: false,
+    //   });
+    // }
     let user = await User.findOne({ googleId: id });
-    if (!user) {
-      // Step 4️⃣ Create new Google user
-      user = await User.create({
-        googleId: id,
-        name,
-        email,
-        avatar: picture,
-        provider: "google",
-        // accessToken,
-        githubAccessToken: null,
-        githubConnected: false,
-      });
-    }
+
+// 🔹 if not found by googleId, try by email (maybe GitHub user exists)
+if (!user && email) {
+  user = await User.findOne({ email });
+}
+
+if (!user) {
+  user = await User.create({
+    googleId: id,
+    githubId: null,
+    name,
+    email,
+    avatar: picture,
+    provider: "google",
+    githubAccessToken: null,
+    githubConnected: false,
+  });
+} else {
+  // ✅ link Google account if not already linked
+  if (!user.googleId) user.googleId = id;
+  user.avatar = picture;
+  await user.save();
+}
 
     // Step 5️⃣ Generate JWT
     const token = jwt.sign(
