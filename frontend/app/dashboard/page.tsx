@@ -391,6 +391,7 @@ import DomainCard from "@/components/ui/domainCard";
 import { fetchInsight } from "@/redux/insight/insightThunks";
 import { fetchCurrentUser } from "@/redux/user/userThunks";
 import Loading from "./loading";
+import RepoCard from "@/components/ui/repoCard";
 
 const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -421,6 +422,7 @@ const Dashboard = () => {
   } = useSelector((state: RootState) => state.users);
   console.log("user", user);
   console.log("abcd", totalCommits);
+   console.log("topRepos", topRepos);
   const {
     domains,
     loading: domainLoading,
@@ -447,12 +449,14 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) return;
 
-    if (user.provider === "google") {
-      console.log("login with google");
-      return;
-    }
+    // if (user.provider === "google") {
+    //   console.log("login with google");
+    //   return;
+    // }
+    console.log("outside")
 
-    if (user.provider === "github") {
+    if (user.githubConnected) {
+       console.log("inside")
       dispatch(fetchReposWithCommits());
     }
   }, [user]);
@@ -461,6 +465,7 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       const resultAction = await dispatch(addDomain(name));
+      console.log(name)
       if (addDomain.fulfilled.match(resultAction)) {
         setName("");
         setShowModal(false);
@@ -471,7 +476,7 @@ const Dashboard = () => {
     }
   };
 
-  if (repoLoading || domainLoading) return <p>Loading dashboard data...</p>;
+  if (repoLoading || domainLoading) return <Loading/>;
   if (repoError || domainError)
     return <p>Error loading data: {repoError || domainError}</p>;
 
@@ -483,7 +488,7 @@ const Dashboard = () => {
           Available Domains
         </h2>
 
-        {user?.provider === "github" && <p>Insight : {insight}</p>}
+      
         <button
           onClick={() => setShowModal(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition-all duration-200"
@@ -497,7 +502,7 @@ const Dashboard = () => {
       {/* ---------- DOMAIN SCROLL ---------- */}
       {domains.length === 0 ? (
         // <Loading />
-        <div className="w-full h-90 bg-blue-50 flex justify-center items-center">
+        <div className="w-full h-90 font-poppins flex justify-center items-center">
           {" "}
           <p>
             Add domains and get started with your comprehensive dev journey{" "}
@@ -516,7 +521,7 @@ const Dashboard = () => {
       )}
 
       {/* ---------- GITHUB REPOS ---------- */}
-      {user?.provider === "github" && (
+      {user?.githubConnected && (
         <section className="mt-10">
           <h2 className="text-xl font-bold mb-3 text-gray-800">
             Top Repositories
@@ -541,21 +546,23 @@ const Dashboard = () => {
             </div>
           ))} */}
             {topRepos?.map((repo: any) => (
-              <div
-                key={repo.id}
-                className="w-[200px] p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200"
-              >
-                <h3 className="font-semibold text-sm text-gray-800 truncate">
-                  {repo.name}
-                </h3>
-                <p className="text-xs text-gray-500 line-clamp-2">
-                  {repo.description || "No description"}
-                </p>
-                <p className="text-xs text-gray-400 mt-2">
-                  ⭐ {repo.stars} | 📝 {repo.commits} |{" "}
-                  {new Date(repo.updated_at).toLocaleDateString()}
-                </p>
-              </div>
+            <RepoCard key={repo.id} repo={repo}/>
+            //  <div
+            //     key={repo.id}
+            //       // onClick={() => router.push(`/${repo.name}`)}
+            //     className="w-[200px] p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200"
+            //   >
+            //     <h3 className="font-semibold text-sm text-gray-800 truncate">
+            //       {repo.name}
+            //     </h3>
+            //     <p className="text-xs text-gray-500 line-clamp-2">
+            //       {repo.description || "No description"}
+            //     </p>
+            //     <p className="text-xs text-gray-400 mt-2">
+            //       ⭐ {repo.stars} | 📝 {repo.commits} |{" "}
+            //       {new Date(repo.updated_at).toLocaleDateString()}
+            //     </p>
+            //   </div>
             ))}
           </div>
         </section>

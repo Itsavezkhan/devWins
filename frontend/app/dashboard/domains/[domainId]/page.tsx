@@ -153,6 +153,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import * as React from "react"
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchFieldsByDomain,
@@ -174,7 +175,7 @@ export default function DomainPage({
 }: {
   params: { domainId: string };
 }) {
-  const { domainId } = params;
+const { domainId } = React.use(params);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -371,10 +372,14 @@ export default function DomainPage({
           </Button>
         </form>
       </Card> */}
+       <Title className="font-heading">Domain Tracker</Title>
+        {valuesLoading && <p>Loading charts...</p>}
 
       {/* Line Chart Section */}
       <div className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {fieldValuesData?.fields?.length === 0 ? (
+          <div className="h-90 w-full flex justify-center items-center"> <p>Add fields to get started your tracking journey</p></div>
+         ) : (  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {fieldValuesData?.fields?.map((field: any) => {
             // Get all dates from recentValues
             const allDates = field.recentValues
@@ -410,10 +415,10 @@ export default function DomainPage({
               </Card>
             );
           })}
-        </div>
+        </div>)}
+      
 
-        <Title>Combined Values</Title>
-        {valuesLoading && <p>Loading charts...</p>}
+       
 
         {/* {fieldValuesData?.fields?.map((field: any) => {
           const chartData = field.recentValues.map((v: any) => ({
@@ -435,8 +440,9 @@ export default function DomainPage({
             </Card>
           );
         })} */}
-        <Title>Recent Field Values</Title>
-        {valuesLoading && <p>Loading charts...</p>}
+        {/* {fieldValuesData?.fields?.length > 0 && (  <Title>Recent Field Values</Title>)}
+      
+        {valuesLoading && <p>Loading charts...</p>} */}
         {/* single indi */}
         {/* {fieldValuesData?.fields?.map((field: any) => {
           const chartData = field.recentValues.map((v: any) => ({

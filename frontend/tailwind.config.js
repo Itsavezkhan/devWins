@@ -6,7 +6,13 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        heading: "var(--font-heading)",   // Playfair Display
+        poppins: "var(--font-poppins)",   // Poppins
+        body: "var(--font-body)",         // Montserrat
+      },
+    },
   },
   plugins: [],
 };

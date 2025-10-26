@@ -21,7 +21,7 @@ export default function DashboardLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     // className={`${geistSans.variable} ${geistMono.variable}`}
-    <html lang="en">
+    <html >
       <body>
         {/* <div className="bg-yellow-300 overflow-hidden h-screen flex">
           <Sidebar />
