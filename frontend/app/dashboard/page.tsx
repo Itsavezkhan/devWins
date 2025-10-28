@@ -485,7 +485,7 @@ const Dashboard = () => {
       {/* ---------- TOP BAR ---------- */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <h2 className="text-2xl font-semibold text-gray-800">
-          Available Domains
+          Available Domains :
         </h2>
 
       
