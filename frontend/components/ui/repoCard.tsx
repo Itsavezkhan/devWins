@@ -13,7 +13,7 @@ const RepoCard = ({ repo }: { repo: any }) => {
       onClick={() => router.push(`/dashboard/repos/${repo.name}`)}
       className="cursor-pointer rounded-2xl p-6 bg-white border border-gray-200 shadow-md hover:shadow-xl transition-all font-poppins duration-300 flex flex-col gap-5 w-full sm:w-[320px] md:w-[340px]"
     >
-      {/* Repo Name */}
+    
       <div>
         <h3 className="text-xl font-semibold text-gray-900 truncate">{repo.name}</h3>
         <p className="text-sm text-gray-600">{repo.description || "No description"}</p>
