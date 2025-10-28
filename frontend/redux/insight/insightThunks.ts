@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+const API_URL = process.env.NEXT_PUBLIC_API_URL_PROD;
 
 
 interface RepoStats {
@@ -12,7 +13,7 @@ export const fetchInsight = createAsyncThunk(
   "insights/fetchInsight",
   async (summaryInput: string, { rejectWithValue }) => {
     try {
-      const res = await fetch("http://localhost:5001/api/insights", {
+      const res = await fetch(`${API_URL}/api/insights`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ summary: summaryInput }),
@@ -32,7 +33,7 @@ export const fetchRepoInsight = createAsyncThunk(
   "insights/fetchRepoInsight",
   async (repoStats: RepoStats, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://localhost:5001/api/insights/repoinsights", {
+      const response = await fetch(`${API_URL}/api/insights/repoinsights`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

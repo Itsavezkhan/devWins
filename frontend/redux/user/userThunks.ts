@@ -1,11 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL_PROD;
+
+
 export const fetchCurrentUser = createAsyncThunk(
   "user/fetchCurrentUser",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get("http://localhost:5001/auth/me", {
+      const res = await axios.get(`${API_URL}/auth/me`, {
         withCredentials: true,
       });
 

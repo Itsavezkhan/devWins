@@ -22,14 +22,14 @@ interface RepoDetails {
 }
 
 interface RepoState {
-  topRepos: Repo[];
+  repos: Repo[];
   totalCommits: number;
   repoDetails: RepoDetails | null;
   loading: boolean;
   error: string | null;
 }
 const initialState: RepoState = {
-  topRepos: [],
+  repos: [],
   repoDetails: null,
   totalCommits: 0,
   loading: false,

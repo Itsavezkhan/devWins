@@ -1,6 +1,8 @@
 // src/redux/thunks/fieldThunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+const API_URL = process.env.NEXT_PUBLIC_API_URL_PROD;
+
 
 // 🔹 Fetch fields by domainId
 export const fetchFieldsByDomain = createAsyncThunk(
@@ -8,7 +10,7 @@ export const fetchFieldsByDomain = createAsyncThunk(
   async (domainId: string, { rejectWithValue }) => {
     try {
       const res = await axios.get(
-        `http://localhost:5001/api/fields/${domainId}`,
+        `${API_URL}/api/fields/${domainId}`,
         {
           withCredentials: true,
         }
@@ -39,7 +41,7 @@ export const addDailyFieldValues = createAsyncThunk(
   ) => {
     try {
       const res = await axios.post(
-        `http://localhost:5001/api/fields/values/${domainId}`,
+        `${API_URL}/api/fields/values/${domainId}`,
         { values, date },
         { withCredentials: true }
       );
