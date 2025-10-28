@@ -27,7 +27,7 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-export const runtime = "edge";
+export const runtime = 'experimental-edge';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

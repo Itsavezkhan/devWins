@@ -1,6 +1,8 @@
 // src/redux/repoThunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+const API_URL = process.env.NEXT_PUBLIC_API_URL_PROD;
+
 
 // export const fetchReposWithCommits = createAsyncThunk(
 //   "repos/fetchRepos",
@@ -28,7 +30,7 @@ export const fetchReposWithCommits = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       // 1️⃣ Get repos from your backend
-      const res = await axios.get("http://localhost:5001/user/githubdata", {
+      const res = await axios.get(`${API_URL}/user/githubdata`, {
         withCredentials: true,
       });
       const username = res.data.user.login;
@@ -47,7 +49,7 @@ export const fetchReposWithCommits = createAsyncThunk(
         topRepos.map(async (repo) => {
           // Assuming your backend has a commits endpoint, else use GitHub API directly
           const commitRes = await axios.get(
-            `http://localhost:5001/user/githubcommits/${username}/${repo.name}`,
+            `${API_URL}/user/githubcommits/${username}/${repo.name}`,
             { withCredentials: true }
           );
           return {
