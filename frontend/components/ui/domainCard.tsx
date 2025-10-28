@@ -56,19 +56,7 @@ const DomainCard: React.FC<DomainCardProps> = ({ d }) => {
         <p className="text-sm text-gray-600">Active Domain</p>
       </div>
 
-      {/* Progress Bar */}
-      {/* <div>
-        <p className="text-sm text-gray-700 mb-1">Progress</p>
-        <div className="w-full bg-gray-300 h-2 rounded-full overflow-hidden">
-          <div
-            className="h-2 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <p className="text-sm text-right mt-1 text-gray-700 font-medium">
-          {progress}%
-        </p>
-      </div> */}
+     
 
       {/* Bottom Row */}
       {/* <div className="flex justify-between items-center mt-2">
