@@ -39,7 +39,7 @@ const DomainCard: React.FC<DomainCardProps> = ({ d }) => {
                   transition-all duration-300 flex flex-col gap-5 
                   w-full sm:w-[320px] md:w-[340px]`}
     >
-      {/* Date */}
+  
       <p className="text-sm text-gray-600">
         {new Date().toLocaleDateString("en-US", {
           month: "long",
@@ -48,17 +48,16 @@ const DomainCard: React.FC<DomainCardProps> = ({ d }) => {
         })}
       </p>
 
-      {/* Domain Name */}
+   
       <div>
         <h3 className="text-xl font-semibold text-gray-900 capitalize">
           {d.name}
         </h3>
         <p className="text-sm text-gray-600">Active Domain</p>
       </div>
-
      
 
-      {/* Bottom Row */}
+     
       {/* <div className="flex justify-between items-center mt-2">
         <div className="flex -space-x-2">
           <img
